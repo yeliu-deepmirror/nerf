@@ -17,16 +17,6 @@ from load_blender import load_blender_data
 tf.compat.v1.enable_eager_execution()
 
 
-def batchify(fn, chunk):
-    """Constructs a version of 'fn' that applies to smaller batches."""
-    if chunk is None:
-        return fn
-
-    def ret(inputs):
-        return tf.concat([fn(inputs[i:i+chunk]) for i in range(0, inputs.shape[0], chunk)], 0)
-    return ret
-
-
 def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
     """Prepares inputs and applies network 'fn'."""
 
@@ -125,7 +115,7 @@ def render_rays(ray_batch,
         # Extract RGB of each sample position along each ray.
         rgb = tf.math.sigmoid(raw[..., :3])  # [N_rays, N_samples, 3]
 
-        # Add noise to model's predictions for density. Can be used to 
+        # Add noise to model's predictions for density. Can be used to
         # regularize network during training (prevents floater artifacts).
         noise = 0.
         if raw_noise_std > 0.:
@@ -277,7 +267,7 @@ def render(H, W, focal,
       near: float or array of shape [batch_size]. Nearest distance for a ray.
       far: float or array of shape [batch_size]. Farthest distance for a ray.
       use_viewdirs: bool. If True, use viewing direction of a point in space in model.
-      c2w_staticcam: array of shape [3, 4]. If not None, use this transformation matrix for 
+      c2w_staticcam: array of shape [3, 4]. If not None, use this transformation matrix for
        camera while using other c2w argument for viewing directions.
 
     Returns:
@@ -497,12 +487,12 @@ def config_parser():
                         help='specific weights npy file to reload for coarse network')
     parser.add_argument("--random_seed", type=int, default=None,
                         help='fix random seed for repeatability')
-    
+
     # pre-crop options
     parser.add_argument("--precrop_iters", type=int, default=0,
                         help='number of steps to train on central crops')
     parser.add_argument("--precrop_frac", type=float,
-                        default=.5, help='fraction of img taken for central crops')    
+                        default=.5, help='fraction of img taken for central crops')
 
     # rendering options
     parser.add_argument("--N_samples", type=int, default=64,
@@ -576,7 +566,7 @@ def train():
 
     parser = config_parser()
     args = parser.parse_args()
-    
+
     if args.random_seed is not None:
         print('Fixing random seed', args.random_seed)
         np.random.seed(args.random_seed)
@@ -785,8 +775,8 @@ def train():
                     dH = int(H//2 * args.precrop_frac)
                     dW = int(W//2 * args.precrop_frac)
                     coords = tf.stack(tf.meshgrid(
-                        tf.range(H//2 - dH, H//2 + dH), 
-                        tf.range(W//2 - dW, W//2 + dW), 
+                        tf.range(H//2 - dH, H//2 + dH),
+                        tf.range(W//2 - dW, W//2 + dW),
                         indexing='ij'), -1)
                     if i < 10:
                         print('precrop', dH, dW, coords[0,0], coords[-1,-1])
@@ -893,7 +883,7 @@ def train():
                                                 **render_kwargs_test)
 
                 psnr = mse2psnr(img2mse(rgb, target))
-                
+
                 # Save out the validation image for Tensorboard-free monitoring
                 testimgdir = os.path.join(basedir, expname, 'tboard_val_imgs')
                 if i==0:

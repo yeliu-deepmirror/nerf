@@ -75,7 +75,33 @@ def get_embedder(multires, i=0):
     return embed, embedder_obj.out_dim
 
 
+def batchify(fn, chunk):
+    """Constructs a version of 'fn' that applies to smaller batches."""
+    if chunk is None:
+        return fn
+
+    def ret(inputs):
+        return tf.concat([fn(inputs[i:i+chunk]) for i in range(0, inputs.shape[0], chunk)], 0)
+    return ret
+
+
 # Model architecture
+
+def init_tiny_nerf_model(L_embed, D=8, W=256):
+    relu = tf.keras.layers.ReLU()
+    dense = lambda W=W, act=relu : tf.keras.layers.Dense(W, activation=act)
+
+    inputs = tf.keras.Input(shape=(3 + 3 * 2 * L_embed))
+    outputs = inputs
+    for i in range(D):
+        outputs = dense()(outputs)
+        if i%4 == 0 and i > 0:
+            outputs = tf.concat([outputs, inputs], -1)
+    outputs = dense(4, act=None)(outputs)
+
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)
+    return model
+
 
 def init_nerf_model(D=8, W=256, input_ch=3, input_ch_views=3, output_ch=4, skips=[4], use_viewdirs=False):
 
@@ -124,6 +150,8 @@ def get_rays(H, W, focal, c2w):
     """Get ray origins, directions from a pinhole camera."""
     i, j = tf.meshgrid(tf.range(W, dtype=tf.float32),
                        tf.range(H, dtype=tf.float32), indexing='xy')
+    # nerf uses a different coordinate system (from the ordinary slam system
+    # which should be [(i-W*.5)/focal, (j-H*.5)/focal, 1])
     dirs = tf.stack([(i-W*.5)/focal, -(j-H*.5)/focal, -tf.ones_like(i)], -1)
     rays_d = tf.reduce_sum(dirs[..., np.newaxis, :] * c2w[:3, :3], -1)
     rays_o = tf.broadcast_to(c2w[:3, -1], tf.shape(rays_d))
