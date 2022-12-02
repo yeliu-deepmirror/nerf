@@ -19,7 +19,7 @@ in ECCV 2020 (Oral Presentation, Best Paper Honorable Mention)
 
 To setup a conda environment, download example training data, begin the training process, and launch Tensorboard:
 ```
-conda env create -f environment.yml
+conda env create -f artifacts/docker/requirements_dev.yml
 conda activate nerf
 bash download_example_data.sh
 python run_nerf.py --config config_fern.txt

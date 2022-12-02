@@ -13,3 +13,4 @@ dependencies:
     - imageio-ffmpeg
     - configargparse
     - imagemagick
+    - jupyter
