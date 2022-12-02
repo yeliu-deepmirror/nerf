@@ -14,3 +14,4 @@ dependencies:
     - configargparse
     - imagemagick
     - jupyter
+    - tqdm

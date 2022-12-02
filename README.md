@@ -27,6 +27,11 @@ tensorboard --logdir=logs/summaries --port=6006
 ```
 If everything works without errors, you can now go to `localhost:6006` in your browser and watch the "Fern" scene train.
 
+remote server
+```
+cd /mnt/nas/share-map/experiment/liuye/dev/nerf
+```
+
 ## Setup
 
 Python 3 dependencies:
