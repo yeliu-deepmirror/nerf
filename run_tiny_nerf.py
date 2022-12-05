@@ -5,7 +5,7 @@ tf.compat.v1.enable_eager_execution()
 from tqdm import tqdm_notebook as tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-from run_nerf_helpers import *
+from nerf_common import *
 
 import warnings
 warnings.filterwarnings('ignore')
