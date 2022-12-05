@@ -5,7 +5,7 @@ dataset_type = dm_npz
 
 N_rand = 1024
 N_samples = 32
-N_importance = 64
+N_importance = 32
 
 use_viewdirs = True
 raw_noise_std = 1e0

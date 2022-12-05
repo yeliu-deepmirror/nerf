@@ -1,5 +1,5 @@
 from nerf_common import *
-
+import time
 
 def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
     """Prepares inputs and applies network 'fn'."""
