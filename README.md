@@ -19,13 +19,18 @@ in ECCV 2020 (Oral Presentation, Best Paper Honorable Mention)
 
 To setup a conda environment, download example training data, begin the training process, and launch Tensorboard:
 ```
-conda env create -f environment.yml
+conda env create -f artifacts/docker/requirements_dev.yml
 conda activate nerf
 bash download_example_data.sh
 python run_nerf.py --config config_fern.txt
 tensorboard --logdir=logs/summaries --port=6006
 ```
 If everything works without errors, you can now go to `localhost:6006` in your browser and watch the "Fern" scene train.
+
+remote server
+```
+cd /mnt/nas/share-map/experiment/liuye/dev/nerf
+```
 
 ## Setup
 
@@ -61,13 +66,13 @@ Here we show how to run our code on two example scenes. You can download the res
 
 Run
 ```
-bash download_example_data.sh
+bash scripts/download_example_data.sh
 ```
 to get the our synthetic Lego dataset and the LLFF Fern dataset.
 
 To optimize a low-res Fern NeRF:
 ```
-python run_nerf.py --config config_fern.txt
+python run_nerf.py --config paper_configs/config_fern.txt
 ```
 After 200k iterations (about 15 hours), you should get a video like this at `logs/fern_test/fern_test_spiral_200000_rgb.mp4`:
 
@@ -75,7 +80,7 @@ After 200k iterations (about 15 hours), you should get a video like this at `log
 
 To optimize a low-res Lego NeRF:
 ```
-python run_nerf.py --config config_lego.txt
+python run_nerf.py --config paper_configs/config_lego.txt
 ```
 After 200k iterations, you should get a video like this:
 
@@ -85,7 +90,7 @@ After 200k iterations, you should get a video like this:
 
 Run
 ```
-bash download_example_weights.sh
+bash scripts/download_example_weights.sh
 ```
 to get a pretrained high-res NeRF for the Fern dataset. Now you can use [`render_demo.ipynb`](https://github.com/bmild/nerf/blob/master/render_demo.ipynb) to render new views.
 
