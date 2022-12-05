@@ -84,10 +84,19 @@ def run_tiny_nerf():
     optimizer = tf.keras.optimizers.Adam(5e-4)
 
     N_samples = 32
-    N_iters = 1000
+    N_iters = 100000
     psnrs = []
     iternums = []
-    i_plot = 25
+    i_plot = 200
+
+    basedir = "data/logs/"
+    expname = "exp"
+    os.makedirs(os.path.join(basedir, expname), exist_ok=True)
+    def save_weights(net, prefix, i):
+        path = os.path.join(
+            basedir, expname, '{}_{:06d}.npy'.format(prefix, i))
+        np.save(path, net.get_weights())
+        print('saved weights at', path)
 
     import time
     t = time.time()
@@ -103,6 +112,8 @@ def run_tiny_nerf():
         optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
         if i%i_plot==0:
+            save_weights(model, "", i);
+
             print(i, (time.time() - t) / i_plot, 'secs per iter')
             t = time.time()
 
@@ -115,14 +126,17 @@ def run_tiny_nerf():
             psnrs.append(psnr.numpy())
             iternums.append(i)
 
-            plt.figure(figsize=(10,4))
-            plt.subplot(121)
+            plt.figure(figsize=(20,4))
+            plt.subplot(131)
             plt.imshow(rgb)
             plt.title(f'Iteration: {i}')
-            plt.subplot(122)
+            plt.subplot(132)
             plt.plot(iternums, psnrs)
             plt.title('PSNR')
-            plt.savefig("data/logs/" + str(i) + ".png")
+            plt.subplot(133)
+            plt.imshow(testimg)
+            plt.title('gt image')
+            plt.savefig(basedir + str(i) + ".png")
 
 
 if __name__ == '__main__':

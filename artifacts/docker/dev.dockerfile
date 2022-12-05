@@ -1,9 +1,10 @@
-FROM ubuntu:18.04
+FROM nvidia/cuda:11.2.1-cudnn8-devel-ubuntu20.04
 
 SHELL [ "/bin/bash", "--login", "-c" ]
 
-RUN apt-get update --fix-missing && \
-    apt-get install -y \
+RUN apt-get update --fix-missing
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+RUN apt-get install -y \
       ffmpeg \
       libsm6 \
       libxext6 \
@@ -21,9 +22,9 @@ RUN apt-get update --fix-missing && \
     rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
-ARG usr=alpha-benchmark
+ARG usr=nerf
 ARG uid=1000
-ARG grp=alpha-benchmark
+ARG grp=nerf
 ARG gid=1000
 ENV USER $usr
 ENV UID $uid

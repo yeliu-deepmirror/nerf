@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 NAME="nerf"
+IMAGE="nerf"
 WORKDIR=/home/$USER/nerf
 
 # Check if the container exists.
@@ -20,11 +21,14 @@ docker run -it -d --name $NAME \
   --hostname $NAME \
   --add-host in_docker:127.0.0.1 \
   --add-host $(hostname):127.0.0.1 \
+  --gpus all \
   -e DISPLAY \
+  -e NVIDIA_VISIBLE_DEVICES=all \
+  -e NVIDIA_DRIVER_CAPABILITIES=all \
   -v /mnt:/mnt \
   -v $DIR/../../:$WORKDIR \
   -w $WORKDIR \
-  $NAME \
+  $IMAGE \
   /bin/bash
 
 echo "Done"
