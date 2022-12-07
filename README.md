@@ -41,6 +41,11 @@ Optimizing a NeRF takes between a few hours and a day or two (depending on resol
 
 ### Optimizing a NeRF
 
+To optimize dm data:
+```
+python run_nerf.py --config paper_configs/dm.txt
+```
+
 Run
 ```
 bash scripts/download_example_data.sh
@@ -76,7 +81,7 @@ pip install trimesh pyrender PyMCubes
 * test with a walking straight forward session. with small image size in tiny nerf.
 <img src='imgs/dm_test_1.png'/>
 
-* test full nerf with higher resolution. failed to converge
+* test full nerf with higher resolution. failed to converge. due to incorrect range (near, far) setting.
 <img src='imgs/dm_test_2.jpg'/>
 
 ## Citation
