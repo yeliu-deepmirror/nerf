@@ -142,9 +142,14 @@ def load_dm_data(npz_path):
     num = images.shape[0]
 
     # make test image from image of the middle
-    test_idx = int(0.5 * num);
+    test_ids = []
+    render_poses = []
+    for i in range(10):
+        id = int(i * num / 10)
+        test_ids.append(id)
+        render_poses.append(poses[id])
 
-    return images, poses[:, :3, :4], hwf, test_idx
+    return images, poses[:, :3, :4], hwf, test_ids, render_poses
 
 def train():
 
@@ -158,14 +163,13 @@ def train():
 
     # Load data
     if args.dataset_type == 'dm_npz':
-        near = 0.
-        far = 1.
-        render_poses = []
-
-        images, poses, hwf, i_test = load_dm_data(args.datadir)
-
+        images, poses, hwf, i_test, render_poses = load_dm_data(args.datadir)
         print('Loaded DM npz', images.shape, hwf, args.datadir)
-        print('NEAR FAR', near, far)
+
+        # dm data use meter unit
+        near = 2.0
+        far = 2.0 * np.max(np.linalg.norm(poses[:, :3, -1], axis=-1))
+        print(' - NEAR FAR', near, far)
 
         if not isinstance(i_test, list):
             i_test = [i_test]
@@ -336,7 +340,7 @@ def train():
         print('done')
         i_batch = 0
 
-    N_iters = 1000000
+    N_iters = 2000000
     print('Begin')
     print('TRAIN views are', i_train)
     print('TEST views are', i_test)

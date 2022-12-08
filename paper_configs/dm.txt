@@ -4,8 +4,8 @@ datadir = ./data/dm/nerf_data.npz
 dataset_type = dm_npz
 
 N_rand = 1024
-N_samples = 32
-N_importance = 32
+N_samples = 48
+N_importance = 48
 
 use_viewdirs = True
 raw_noise_std = 1e0
